@@ -9,6 +9,15 @@ namespace gyakmvc40702.Controllers
 {
     public class ReviewsController : Controller
     {
+
+        public ActionResult BestReview()
+        {
+            var bestReview = from r in _reviews
+                             orderby r.Rating descending
+                             select r;
+
+            return PartialView("_Review", bestReview.First());
+        }
         //
         // GET: /Reviews/
 
@@ -60,6 +69,8 @@ namespace gyakmvc40702.Controllers
 
         public ActionResult Edit(int id)
         {
+            var review = _reviews.Single(r => r.Id == id);
+
             return View();
         }
 
@@ -69,16 +80,13 @@ namespace gyakmvc40702.Controllers
         [HttpPost]
         public ActionResult Edit(int id, FormCollection collection)
         {
-            try
+            var review = _reviews.Single(r => r.Id == id);
+            if(TryUpdateModel(review))
             {
-                // TODO: Add update logic here
-
+                //..
                 return RedirectToAction("Index");
             }
-            catch
-            {
-                return View();
-            }
+            return View(review);
         }
 
         //
